@@ -375,7 +375,12 @@ runs:
 
         # Post output to job summary.
         echo "$body" >> $GITHUB_STEP_SUMMARY
-        echo "comment_body=$body" >> "$GITHUB_OUTPUT"
+
+        # Return comment body as output.
+        { echo 'comment_body<<EOTFCOMMENTBODY'
+          echo "$body"
+          echo EOTFCOMMENTBODY
+        } >> "$GITHUB_OUTPUT"
 
         # Post PR comment if configured and PR exists.
         if [[ "$create_comment" == "true" && "${{ steps.identifier.outputs.pr }}" != "0" ]]; then
