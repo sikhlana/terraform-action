@@ -480,6 +480,10 @@ inputs:
     default: ""
     description: "Encrypt plan file artifact with the given input (e.g., `secrets.PASSPHRASE`)."
     required: false
+  plan-artifact-extra-token:
+    default: ""
+    description: "Extra token(s) to use to generate plan artifact name."
+    required: false
   plan-parity:
     default: "false"
     description: "Replace the plan file if it matches a newly-generated one to prevent stale apply (e.g., `false`)."
