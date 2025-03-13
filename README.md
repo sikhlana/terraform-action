@@ -21,7 +21,7 @@
     <td>
       <ul>
         <li>Plan and apply changes with CLI arguments and <strong>encrypted plan file</strong> to avoid configuration drift.</li>
-        <li>Outline diff changes within updated <strong>PR comment</strong> and matrix-friendly workflow summary, complete with log.</li>
+        <li>Outline diff within up-to-date <strong>PR comment</strong> and matrix-friendly workflow summary, complete with log.</li>
       </ul>
     </td>
     <td>
@@ -35,7 +35,7 @@
 
 </br>
 
-### View: [Usage Examples](#usage-examples) · [In/Output Parameters](#parameters) · [Security](#security) · [Changelog](#changelog) · [License](#license)
+### View: [Usage Examples](#usage-examples) · [Inputs](#inputs) · [Outputs](#outputs) · [Security](#security) · [Changelog](#changelog) · [License](#license)
 
 [![PR comment of plan output with "Diff of changes" section expanded.](/.github/assets/comment.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/comment.png "View full-size image.")
 
@@ -68,12 +68,13 @@ jobs:
         with:
           terraform_wrapper: false
 
+      # Run plan by default, or apply on merge.
       - uses: op5dev/tf-via-pr@v13
         with:
-          # Run plan by default, or apply on push to main.
           working-directory: path/to/directory
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
+          arg-backend-config: env/dev.tfbackend
           arg-var-file: env/dev.tfvars
           arg-workspace: dev-use1
           plan-encrypt: ${{ secrets.PASSPHRASE }}
@@ -81,15 +82,15 @@ jobs:
 
 > [!TIP]
 >
-> - All supported arguments (e.g., `-backend-config`, `-destroy`, `-parallelism`, etc.) are [listed below](#inputs---arguments).
-> - Environment variables can be passed in for cloud platform authentication (e.g., [configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials "Configuring AWS credentials for use in GitHub Actions.") for short-lived credentials).
+> - All supported arguments (e.g., `-backend-config`, `-destroy`, `-parallelism`, etc.) are [listed below](#arguments).
+> - Environment variables can be passed in for cloud platform authentication (e.g., [configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials "Configuring AWS credentials for use in GitHub Actions.") for short-lived credentials via OIDC).
 > - Recommend setting `terraform_wrapper`/`tofu_wrapper` to `false` in order to output the [detailed exit code](https://developer.hashicorp.com/terraform/cli/commands/plan#detailed-exitcode) for better error handling.
 
 </br>
 
 ### Where to find more examples?
 
-The following workflows showcase common use cases, while a comprehensive list of inputs is [documented](#parameters) below.
+The following workflows showcase common use cases, while a comprehensive list of inputs is [documented](#inputs) below.
 
 <table>
   <tr>
@@ -134,7 +135,7 @@ The following workflows showcase common use cases, while a comprehensive list of
 
 ### How does encryption work?
 
-Before the workflow uploads the plan file as an artifact, it can be encrypted with a passphrase (e.g., `${{ secrets.PASSPHRASE }}`) to prevent exposure of sensitive data using `plan-encrypt` input. This is done with [OpenSSL](https://docs.openssl.org/master/man1/openssl-enc/ "OpenSSL encryption documentation.")'s symmetric stream counter mode encryption with salt and pbkdf2.
+Before the workflow uploads the plan file as an artifact, it can be encrypted-at-rest with a passphrase using `plan-encrypt` input to prevent exposure of sensitive data (e.g., `${{ secrets.PASSPHRASE }}`). This is done with [OpenSSL](https://docs.openssl.org/master/man1/openssl-enc/ "OpenSSL encryption documentation.")'s symmetric stream counter mode ([256 bit AES in CTR](https://docs.openssl.org/3.3/man1/openssl-enc/#supported-ciphers:~:text=192/256%20bit-,AES%20in%20CTR%20mode,-aes%2D%5B128%7C192)) encryption with salt and pbkdf2.
 
 In order to decrypt the plan file locally, use the following commands after downloading the artifact (adding a whitespace before `openssl` to prevent recording the command in shell history):
 
@@ -149,56 +150,53 @@ openssl enc -d -aes-256-ctr -pbkdf2 -salt \
 
 </br>
 
-For each workflow run, a matrix-friendly job summary with logs is added as a fallback to the PR comment. Below this, you'll find a list of plan file artifacts generated during runtime.</br>
+## Inputs
 
-[![Workflow job summary with plan file artifact.](/.github/assets/workflow.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/workflow.png "View full-size image.")
+All supported CLI argument inputs are [listed below](#arguments) with accompanying options, while workflow configuration inputs are listed here.
 
-</br>
+### Configuration
 
-## Parameters
-
-### Inputs - Configuration
-
-| Type     | Name                | Description                                                                                                       |
-| -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| CLI      | `working-directory` | Specify the working directory of TF code, alias of `arg-chdir`.</br>Example: `path/to/directory`                  |
-| CLI      | `command`           | Command to run between: `plan` or `apply`.<sup>1</sup></br>Example: `plan`                                        |
-| CLI      | `tool`              | Provisioning tool to use between: `terraform` or `tofu`.</br>Default: `terraform`                                 |
-| Check    | `format`            | Check format of TF code.</br>Default: `false`                                                                     |
-| Check    | `validate`          | Check validation of TF code.</br>Default: `false`                                                                 |
-| Check    | `plan-parity`       | Replace plan file if it matches a newly-generated one to prevent stale apply.<sup>2</sup></br>Default: `false`    |
-| Security | `plan-encrypt`      | Encrypt plan file artifact with the given input.<sup>3</sup></br>Example: `${{ secrets.PASSPHRASE }}`             |
-| Security | `retention-days`    | Duration after which plan file artifact will expire in days.</br>Example: `90`                                    |
-| Security | `token`             | Specify a GitHub token.</br>Default: `${{ github.token }}`                                                        |
-| UI       | `label-pr`          | Add a PR label with the command input (e.g., `tf:plan`).</br>Default: `true`                                      |
-| UI       | `comment-pr`        | Add a PR comment: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                            |
-| UI       | `comment-method`    | PR comment by: `update` existing comment or `recreate` and delete previous one.<sup>5</sup></br>Default: `update` |
-| UI       | `tag-actor`         | Tag the workflow triggering actor: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`           |
-| UI       | `hide-args`         | Hide comma-separated list of CLI arguments from the command input.</br>Default: `detailed-exitcode,lock,out,var=` |
-| UI       | `show-args`         | Show comma-separated list of CLI arguments in the command input.</br>Default: `workspace`                         |
+| Type     | Name                | Description                                                                                                                               |
+| -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI      | `working-directory` | Specify the working directory of TF code, alias of `arg-chdir`.</br>Example: `path/to/directory`                                          |
+| CLI      | `command`           | Command to run between: `plan` or `apply`.<sup>1</sup></br>Example: `plan`                                                                |
+| CLI      | `tool`              | Provisioning tool to use between: `terraform` or `tofu`.</br>Default: `terraform`                                                         |
+| Check    | `format`            | Check format of TF code.</br>Default: `false`                                                                                             |
+| Check    | `validate`          | Check validation of TF code.</br>Default: `false`                                                                                         |
+| Check    | `plan-parity`       | Replace plan file if it matches a newly-generated one to prevent stale apply.<sup>2</sup></br>Default: `false`                            |
+| Security | `plan-encrypt`      | Encrypt plan file artifact with the given input.<sup>3</sup></br>Example: `${{ secrets.PASSPHRASE }}`                                     |
+| Security | `retention-days`    | Duration after which plan file artifact will expire in days.</br>Example: `90`                                                            |
+| Security | `token`             | Specify a GitHub token.</br>Default: `${{ github.token }}`                                                                                |
+| UI       | `label-pr`          | Add a PR label with the command input (e.g., `tf:plan`).</br>Default: `true`                                                              |
+| UI       | `comment-pr`        | Add a PR comment: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                                                    |
+| UI       | `comment-method`    | PR comment by: `update` existing comment or `recreate` and delete previous one.<sup>5</sup></br>Default: `update`                         |
+| UI       | `tag-actor`         | Tag the workflow triggering actor: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                                   |
+| UI       | `hide-args`         | Hide comma-separated list of CLI arguments from the command input.<sup>6</sup></br>Default: `detailed-exitcode,parallelism,lock,out,var=` |
+| UI       | `show-args`         | Show comma-separated list of CLI arguments in the command input.<sup>6</sup></br>Default: `workspace`                                     |
 
 </br>
 
 1. Both `command: plan` and `command: apply` include: `init`, `fmt` (with `format: true`), `validate` (with `validate: true`), and `workspace` (with `arg-workspace`) commands rolled into it automatically.</br>
   To separately run checks and/or generate outputs only, `command: init` can be used.</br></br>
-1. Originally intended for `merge_group` event trigger, `plan-parity: true` input helps prevent stale apply within a series of workflow runs when merging multiple PRs.</br></br>
+1. Originally intended for `merge_group` event trigger, `plan-parity: true` input helps to prevent stale apply within a series of workflow runs when merging multiple PRs.</br></br>
 1. The secret string input for `plan-encrypt` can be of any length, as long as it's consistent between encryption (plan) and decryption (apply).</br></br>
-1. The `on-change` option is true when the exit code of the last TF command is non-zero.</br></br>
+1. The `on-change` option is true when the exit code of the last TF command is non-zero (ensure `terraform_wrapper`/`tofu_wrapper` is set to `false`).</br></br>
 1. The default behavior of `comment-method` is to update the existing PR comment with the latest plan/apply output, making it easy to track changes over time through the comment's revision history.</br></br>
-  [![PR comment revision history comparing plan and apply outputs.](/.github/assets/revisions.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/revisions.png "View full-size image.")
+  [![PR comment revision history comparing plan and apply outputs.](/.github/assets/revisions.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/revisions.png "View full-size image.")</br></br>
+1. It can be desirable to hide certain arguments from the last run command input to prevent exposure in the PR comment (e.g., sensitive `arg-var` values). Conversely, it can be desirable to show other arguments even if they are not in last run command input (e.g., `arg-workspace` or `arg-backend-config` selection).
 
 </br>
 
-### Inputs - Arguments
+### Arguments
 
 > [!NOTE]
 >
-> - Arguments are passed to the appropriate TF command(s) automatically, whether that's `init`, `workspace`, `validate`, `plan`, or `apply`.</br>
+> - Arguments are passed to the appropriate TF command(s) automatically, whether that's `fmt`, `init`, `validate`, `plan`, or `apply`.</br>
 > - For repeated arguments like `arg-var`, `arg-var-file`, `arg-backend-config`, `arg-replace` and `arg-target`, use commas to separate multiple values (e.g., `arg-var: key1=value1,key2=value2`).
 
-<details><summary>Toggle view of all available CLI arguments.</summary>
-
 </br>
+
+Applicable to respective "plan" and "apply" `command` inputs ("init" included).
 
 | Name                      | CLI Argument                             |
 | ------------------------- | ---------------------------------------- |
@@ -206,45 +204,57 @@ For each workflow run, a matrix-friendly job summary with logs is added as a fal
 | `arg-backend-config`      | `-backend-config`                        |
 | `arg-backend`             | `-backend`                               |
 | `arg-backup`              | `-backup`                                |
-| `arg-chdir`               | `-chdir`                                 |
-| `arg-check`               | `-check`</br>Default: `true`             |
+| `arg-chdir`               | `-chdir`</br>Alias: `working-directory`  |
 | `arg-compact-warnings`    | `-compact-warnings`                      |
 | `arg-concise`             | `-concise`                               |
 | `arg-destroy`             | `-destroy`                               |
 | `arg-detailed-exitcode`   | `-detailed-exitcode`</br>Default: `true` |
-| `arg-diff`                | `-diff`</br>Default: `true`              |
 | `arg-force-copy`          | `-force-copy`                            |
 | `arg-from-module`         | `-from-module`                           |
 | `arg-generate-config-out` | `-generate-config-out`                   |
 | `arg-get`                 | `-get`                                   |
-| `arg-list`                | `-list`                                  |
 | `arg-lock-timeout`        | `-lock-timeout`                          |
 | `arg-lock`                | `-lock`                                  |
 | `arg-lockfile`            | `-lockfile`                              |
 | `arg-migrate-state`       | `-migrate-state`                         |
-| `arg-no-tests`            | `-no-tests`                              |
-| `arg-or-create`           | `-or-create`</br>Default: `true`         |
 | `arg-parallelism`         | `-parallelism`                           |
 | `arg-plugin-dir`          | `-plugin-dir`                            |
 | `arg-reconfigure`         | `-reconfigure`                           |
-| `arg-recursive`           | `-recursive`</br>Default: `true`         |
 | `arg-refresh-only`        | `-refresh-only`                          |
 | `arg-refresh`             | `-refresh`                               |
 | `arg-replace`             | `-replace`                               |
 | `arg-state-out`           | `-state-out`                             |
 | `arg-state`               | `-state`                                 |
 | `arg-target`              | `-target`                                |
-| `arg-test-directory`      | `-test-directory`                        |
 | `arg-upgrade`             | `-upgrade`                               |
 | `arg-var-file`            | `-var-file`                              |
 | `arg-var`                 | `-var`                                   |
-| `arg-workspace`           | `-workspace`                             |
-| `arg-write`               | `-write`                                 |
-</details>
+| `arg-workspace`           | `-workspace`</br>Alias: `TF_WORKSPACE`   |
 
 </br>
 
-### Outputs
+Applicable only when `format: true`.
+
+| Name            | CLI Argument                     |
+| --------------- | -------------------------------- |
+| `arg-check`     | `-check`</br>Default: `true`     |
+| `arg-diff`      | `-diff`</br>Default: `true`      |
+| `arg-list`      | `-list`                          |
+| `arg-recursive` | `-recursive`</br>Default: `true` |
+| `arg-write`     | `-write`                         |
+
+</br>
+
+Applicable only when `validate: true`.
+
+| Name                 | CLI Argument      |
+| -------------------- | ----------------- |
+| `arg-no-tests`       | `-no-tests`       |
+| `arg-test-directory` | `-test-directory` |
+
+</br>
+
+## Outputs
 
 | Type     | Name           | Description                                   |
 | -------- | -------------- | --------------------------------------------- |
@@ -300,4 +310,4 @@ View [all notable changes](https://github.com/op5dev/tf-via-pr/releases "Release
 
 - This project is licensed under the permissive [Apache License 2.0](LICENSE "Apache License 2.0.").
 - All works herein are my own, shared of my own volition, and [contributors](https://github.com/op5dev/tf-via-pr/graphs/contributors "Contributors.").
-- Copyright 2016-2025 [Rishav Dhar](https://github.com/rdhar "Rishav Dhar's GitHub profile.") — All wrongs reserved.
+- Copyright 2016-present [Rishav Dhar](https://github.com/rdhar "Rishav Dhar's GitHub profile.") — All wrongs reserved.
