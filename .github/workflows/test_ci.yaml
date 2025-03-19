@@ -1,5 +1,5 @@
 ---
-name: Tests
+name: Test CI
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     types: [opened, reopened, synchronize, closed]
 
 jobs:
-  tests:
+  ci:
     runs-on: ubuntu-24.04
 
     permissions:
@@ -67,10 +67,14 @@ jobs:
           comment-pr: ${{ matrix.tool == 'tofu' && 'always' || 'never' }}
           format: true
           validate: true
+          preserve-plan: true
+          plan-encrypt: ${{ secrets.TF_ENCRYPTION }}
+          retention-days: 1
           tag-actor: never
           tool: ${{ matrix.tool }}
 
       - name: Echo TF
+        continue-on-error: true
         run: |
           echo "check-id: ${{ steps.tf.outputs.check-id }}"
           echo "command: ${{ steps.tf.outputs.command }}"
@@ -85,3 +89,4 @@ jobs:
           echo "result: ${{ steps.tf.outputs.result }}"
           echo "run-url: ${{ steps.tf.outputs.run-url }}"
           echo "summary: ${{ steps.tf.outputs.summary }}"
+          ${{ matrix.tool }} -chdir=tests/${{ matrix.test }} show -no-color tfplan
