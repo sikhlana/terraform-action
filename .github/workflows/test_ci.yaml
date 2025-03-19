@@ -68,6 +68,7 @@ jobs:
           format: true
           validate: true
           preserve-plan: true
+          plan-parity: true
           plan-encrypt: ${{ secrets.TF_ENCRYPTION }}
           retention-days: 1
           tag-actor: never

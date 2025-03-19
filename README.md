@@ -161,6 +161,7 @@ All supported CLI argument inputs are [listed below](#arguments) with accompanyi
 | CLI      | `working-directory` | Specify the working directory of TF code, alias of `arg-chdir`.</br>Example: `path/to/directory`                                          |
 | CLI      | `command`           | Command to run between: `plan` or `apply`.<sup>1</sup></br>Example: `plan`                                                                |
 | CLI      | `tool`              | Provisioning tool to use between: `terraform` or `tofu`.</br>Default: `terraform`                                                         |
+| CLI      | `plan-file`         | Supply existing plan file path instead of the auto-generated one.</br>Example: `path/to/file.tfplan`                                      |
 | Check    | `format`            | Check format of TF code.</br>Default: `false`                                                                                             |
 | Check    | `validate`          | Check validation of TF code.</br>Default: `false`                                                                                         |
 | Check    | `plan-parity`       | Replace plan file if it matches a newly-generated one to prevent stale apply.<sup>2</sup></br>Default: `false`                            |
