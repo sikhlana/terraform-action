@@ -170,6 +170,8 @@ All supported CLI argument inputs are [listed below](#arguments) with accompanyi
 | Security | `upload-plan`       | Upload plan file as GitHub workflow artifact.</br>Default: `true`                                                                         |
 | Security | `retention-days`    | Duration after which plan file artifact will expire in days.</br>Example: `90`                                                            |
 | Security | `token`             | Specify a GitHub token.</br>Default: `${{ github.token }}`                                                                                |
+| UI       | `expand-diff`       | Expand the collapsible diff section.</br>Default: `false`                                                                                 |
+| UI       | `expand-summary`    | Expand the collapsible summary section.</br>Default: `false`                                                                              |
 | UI       | `label-pr`          | Add a PR label with the command input (e.g., `tf:plan`).</br>Default: `true`                                                              |
 | UI       | `comment-pr`        | Add a PR comment: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                                                    |
 | UI       | `comment-method`    | PR comment by: `update` existing comment or `recreate` and delete previous one.<sup>5</sup></br>Default: `update`                         |
@@ -180,7 +182,7 @@ All supported CLI argument inputs are [listed below](#arguments) with accompanyi
 </br>
 
 1. Both `command: plan` and `command: apply` include: `init`, `fmt` (with `format: true`), `validate` (with `validate: true`), and `workspace` (with `arg-workspace`) commands rolled into it automatically.</br>
-  To separately run checks and/or generate outputs only, `command: init` can be used.</br></br>
+    To separately run checks and/or generate outputs only, `command: init` can be used.</br></br>
 1. Originally intended for `merge_group` event trigger, `plan-parity: true` input helps to prevent stale apply within a series of workflow runs when merging multiple PRs.</br></br>
 1. The secret string input for `plan-encrypt` can be of any length, as long as it's consistent between encryption (plan) and decryption (apply).</br></br>
 1. The `on-change` option is true when the exit code of the last TF command is non-zero (ensure `terraform_wrapper`/`tofu_wrapper` is set to `false`).</br></br>
