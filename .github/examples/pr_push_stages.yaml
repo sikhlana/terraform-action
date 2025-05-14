@@ -23,6 +23,11 @@ jobs:
 
       - name: Setup TF
         uses: hashicorp/setup-terraform@v3
+<<<<<<< HEAD
+=======
+        with:
+          terraform_wrapper: false
+>>>>>>> upstream/main
 
       - name: Plan TF
         uses: op5dev/tf-via-pr@v13
@@ -41,6 +46,11 @@ jobs:
 
       - name: Setup TF
         uses: hashicorp/setup-terraform@v3
+<<<<<<< HEAD
+=======
+        with:
+          terraform_wrapper: false
+>>>>>>> upstream/main
 
       - name: Init TF
         id: tf
@@ -88,6 +98,11 @@ jobs:
 
       - name: Setup TF
         uses: hashicorp/setup-terraform@v3
+<<<<<<< HEAD
+=======
+        with:
+          terraform_wrapper: false
+>>>>>>> upstream/main
 
       - name: Apply TF
         uses: op5dev/tf-via-pr@v13
