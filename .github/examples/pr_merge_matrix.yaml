@@ -28,21 +28,15 @@ jobs:
 
       - name: Setup TF
         uses: opentofu/setup-opentofu@v1
-<<<<<<< HEAD
-=======
         with:
           tofu_wrapper: false
->>>>>>> upstream/main
 
       - name: Provision TF
         uses: op5dev/tf-via-pr@v13
         with:
           working-directory: path/to/${{ matrix.deployment }}
           command: ${{ github.event_name == 'merge_group' && 'apply' || 'plan' }}
-<<<<<<< HEAD
-=======
           arg-refresh: ${{ github.event_name == 'merge_group' && 'false' || 'true' }} # Skip refresh on apply.
->>>>>>> upstream/main
           arg-lock: ${{ github.event_name == 'merge_group' }}
           arg-var-file: env/${{ matrix.deployment }}.tfvars
           arg-workspace: ${{ matrix.deployment }}

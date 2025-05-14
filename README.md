@@ -21,11 +21,7 @@
     <td>
       <ul>
         <li>Plan and apply changes with CLI arguments and <strong>encrypted plan file</strong> to avoid configuration drift.</li>
-<<<<<<< HEAD
-        <li>Outline diff changes within updated <strong>PR comment</strong> and matrix-friendly workflow summary, complete with log.</li>
-=======
         <li>Outline diff within up-to-date <strong>PR comment</strong> and matrix-friendly workflow summary, complete with log.</li>
->>>>>>> upstream/main
       </ul>
     </td>
     <td>
@@ -39,11 +35,7 @@
 
 </br>
 
-<<<<<<< HEAD
-### View: [Usage Examples](#usage-examples) · [In/Output Parameters](#parameters) · [Security](#security) · [Changelog](#changelog) · [License](#license)
-=======
 ### View: [Usage Examples](#usage-examples) · [Inputs](#inputs) · [Outputs](#outputs) · [Security](#security) · [Changelog](#changelog) · [License](#license)
->>>>>>> upstream/main
 
 [![PR comment of plan output with "Diff of changes" section expanded.](/.github/assets/comment.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/comment.png "View full-size image.")
 
@@ -70,16 +62,6 @@ jobs:
       pull-requests: write # Required to add comment and label.
 
     steps:
-<<<<<<< HEAD
-      - uses: actions/checkout@4
-      - uses: hashicorp/setup-terraform@v3
-      - uses: op5dev/tf-via-pr@v13
-        with:
-          # Run plan by default, or apply on merge with lock.
-          working-directory: path/to/directory
-          command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
-          arg-lock: ${{ github.event_name == 'push' }}
-=======
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v3
@@ -93,7 +75,6 @@ jobs:
           command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
           arg-lock: ${{ github.event_name == 'push' }}
           arg-backend-config: env/dev.tfbackend
->>>>>>> upstream/main
           arg-var-file: env/dev.tfvars
           arg-workspace: dev-use1
           plan-encrypt: ${{ secrets.PASSPHRASE }}
@@ -101,38 +82,19 @@ jobs:
 
 > [!TIP]
 >
-<<<<<<< HEAD
-> - All supported arguments (e.g., `-backend-config`, `-destroy`, `-parallelism`, etc.) are [listed below](#inputs---arguments).
-> - Environment variables can be passed in for cloud platform authentication (e.g., [configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials "Configuring AWS credentials for use in GitHub Actions.") for short-lived credentials).
-=======
 > - All supported arguments (e.g., `-backend-config`, `-destroy`, `-parallelism`, etc.) are [listed below](#arguments).
 > - Environment variables can be passed in for cloud platform authentication (e.g., [configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials "Configuring AWS credentials for use in GitHub Actions.") for short-lived credentials via OIDC).
 > - Recommend setting `terraform_wrapper`/`tofu_wrapper` to `false` in order to output the [detailed exit code](https://developer.hashicorp.com/terraform/cli/commands/plan#detailed-exitcode) for better error handling.
->>>>>>> upstream/main
 
 </br>
 
 ### Where to find more examples?
 
-<<<<<<< HEAD
-The following workflows showcase common use cases, while a comprehensive list of inputs is [documented](#parameters) below.
-=======
 The following workflows showcase common use cases, while a comprehensive list of inputs is [documented](#inputs) below.
->>>>>>> upstream/main
 
 <table>
   <tr>
     <td>
-<<<<<<< HEAD
-      </br>
-      <a href="/.github/examples/pr_push_auth.yaml"><strong>Run on</strong></a> <code>pull_request</code> (plan) and <code>push</code> (apply) events with Terraform, <strong>authentication</strong> and <strong>cache</strong>.
-      </br></br>
-    </td>
-    <td>
-      </br>
-      <a href="/.github/examples/pr_merge_matrix.yaml"><strong>Run on</strong></a> <code>pull_request</code> (plan) and <code>merge_group</code> (apply) events with OpenTofu in <strong>matrix</strong> strategy.
-      </br></br>
-=======
       <h4><a href="/.github/examples/pr_push_auth.yaml">#1 example ⤴</a></h4>
       <p>Runs on <code>pull_request</code> (plan) and <code>push</code> (apply) events with Terraform, AWS <strong>authentication</strong> and <strong>cache</strong>.</p>
       </br>
@@ -141,21 +103,10 @@ The following workflows showcase common use cases, while a comprehensive list of
       <h4><a href="/.github/examples/pr_merge_matrix.yaml">#2 example ⤴</a></h4>
       <p>Runs on <code>pull_request</code> (plan) and <code>merge_group</code> (apply) events with OpenTofu in <strong>matrix</strong> strategy.</p>
       </br>
->>>>>>> upstream/main
     </td>
   </tr>
   <tr>
     <td>
-<<<<<<< HEAD
-      </br>
-      <a href="/.github/examples/pr_push_stages.yaml"><strong>Run on</strong></a> <code>pull_request</code> (plan) and <code>push</code> (apply) events with <strong>conditional jobs</strong> based on plan file.
-      </br></br>
-    </td>
-    <td>
-      </br>
-      <a href="/.github/examples/schedule_refresh.yaml"><strong>Run on</strong></a> <code>schedule</code> <strong>cron</strong> event with <code>-refresh-only</code> to open an issue on <strong>configuration drift</strong>.
-      </br></br>
-=======
       <h4><a href="/.github/examples/pr_push_lint.yaml">#3 example ⤴</a></h4>
       <p>Runs on <code>pull_request</code> (plan) and <code>push</code> (apply) events with <strong>fmt/validate checks</strong> and TFLint.</p>
       </br>
@@ -164,21 +115,10 @@ The following workflows showcase common use cases, while a comprehensive list of
       <h4><a href="/.github/examples/pr_push_stages.yaml">#4 example ⤴</a></h4>
       <p>Runs on <code>pull_request</code> (plan) and <code>push</code> (apply) events with <strong>conditional jobs</strong> based on plan file.</p>
       </br>
->>>>>>> upstream/main
     </td>
   </tr>
   <tr>
     <td>
-<<<<<<< HEAD
-      </br>
-      <a href="/.github/examples/pr_push_lint.yaml"><strong>Run on</strong></a> <code>pull_request</code> (plan) and <code>push</code> (apply) events with <strong>fmt/validate checks</strong> and TFLint.
-      </br></br>
-    </td>
-    <td>
-      </br>
-      <a href="/.github/examples/pr_self_hosted.yaml"><strong>Run on</strong></a> <code>pull_request</code> (plan or apply) and <code>labeled</code> <strong>manual</strong> events on <strong>self-hosted</strong> Terraform/OpenTofu.
-      </br></br>
-=======
       <h4><a href="/.github/examples/pr_manual_label.yaml">#5 example ⤴</a></h4>
       <p>Runs on <code>labeled</code> and <code>workflow_dispatch</code> <strong>manual</strong> events on GitHub Enterprise (GHE) <strong>self-hosted runner</strong>.</p>
       </br>
@@ -187,7 +127,6 @@ The following workflows showcase common use cases, while a comprehensive list of
       <h4><a href="/.github/examples/schedule_refresh.yaml">#6 example ⤴</a></h4>
       <p>Runs on <code>schedule</code> <strong>cron</strong> event with <code>-refresh-only</code> to open an issue on <strong>configuration drift</strong>.</p>
       </br>
->>>>>>> upstream/main
     </td>
   </tr>
 </table>
@@ -196,62 +135,21 @@ The following workflows showcase common use cases, while a comprehensive list of
 
 ### How does encryption work?
 
-<<<<<<< HEAD
-Before the workflow uploads the plan file as an artifact, it can be encrypted with a passphrase (e.g., `${{ secrets.PASSPHRASE }}`) to prevent exposure of sensitive data using `plan-encrypt` input. This is done with [OpenSSL](https://docs.openssl.org/master/man1/openssl-enc/ "OpenSSL encryption documentation.")'s symmetric stream counter mode encryption with salt and pbkdf2.
-=======
 Before the workflow uploads the plan file as an artifact, it can be encrypted-at-rest with a passphrase using `plan-encrypt` input to prevent exposure of sensitive data (e.g., `${{ secrets.PASSPHRASE }}`). This is done with [OpenSSL](https://docs.openssl.org/master/man1/openssl-enc/ "OpenSSL encryption documentation.")'s symmetric stream counter mode ([256 bit AES in CTR](https://docs.openssl.org/3.3/man1/openssl-enc/#supported-ciphers:~:text=192/256%20bit-,AES%20in%20CTR%20mode,-aes%2D%5B128%7C192)) encryption with salt and pbkdf2.
->>>>>>> upstream/main
 
 In order to decrypt the plan file locally, use the following commands after downloading the artifact (adding a whitespace before `openssl` to prevent recording the command in shell history):
 
 ```fish
-<<<<<<< HEAD
-unzip <tf.plan>
-openssl enc -d -aes-256-ctr -pbkdf2 -salt \
-  -in <tf.plan> \
-  -out tf.plan.decrypted \
-  -pass pass:"<passphrase>"
-<tf.tool> show tf.plan.decrypted
-=======
 unzip <tfplan.zip>
 openssl enc -d -aes-256-ctr -pbkdf2 -salt \
   -in   tfplan.encrypted \
   -out  tfplan.decrypted \
   -pass pass:"<passphrase>"
 <tf.tool> show tfplan.decrypted
->>>>>>> upstream/main
 ```
 
 </br>
 
-<<<<<<< HEAD
-For each workflow run, a matrix-friendly job summary with logs is added as a fallback to the PR comment. Below this, you'll find a list of plan file artifacts generated during runtime.</br>
-
-[![Workflow job summary with plan file artifact.](/.github/assets/workflow.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/workflow.png "View full-size image.")
-
-</br>
-
-## Parameters
-
-### Inputs - Configuration
-
-| Type     | Name                | Description                                                                                                       |
-| -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| CLI      | `working-directory` | Specify the working directory of TF code, alias of `arg-chdir`.</br>Example: `path/to/directory`                  |
-| CLI      | `command`           | Command to run between: `plan` or `apply`.<sup>1</sup></br>Example: `plan`                                        |
-| CLI      | `tool`              | Provisioning tool to use between: `terraform` or `tofu`.</br>Default: `terraform`                                 |
-| Check    | `format`            | Check format of TF code.</br>Default: `false`                                                                     |
-| Check    | `validate`          | Check validation of TF code.</br>Default: `false`                                                                 |
-| Check    | `plan-parity`       | Replace plan file if it matches a newly-generated one to prevent stale apply.<sup>2</sup></br>Default: `false`    |
-| Security | `plan-encrypt`      | Encrypt plan file artifact with the given input.<sup>3</sup></br>Example: `${{ secrets.PASSPHRASE }}`             |
-| Security | `token`             | Specify a GitHub token.</br>Default: `${{ github.token }}`                                                        |
-| UI       | `label-pr`          | Add a PR label with the command input (e.g., `tf:plan`).</br>Default: `true`                                      |
-| UI       | `comment-pr`        | Add a PR comment: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                            |
-| UI       | `comment-method`    | PR comment by: `update` existing comment or `recreate` and delete previous one.<sup>5</sup></br>Default: `update` |
-| UI       | `tag-actor`         | Tag the workflow triggering actor: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`           |
-| UI       | `hide-args`         | Hide comma-separated list of CLI arguments from the command input.</br>Default: `detailed-exitcode,lock,out,var=` |
-| UI       | `show-args`         | Show comma-separated list of CLI arguments in the command input.</br>Default: `workspace`                         |
-=======
 ## Inputs
 
 All supported CLI argument inputs are [listed below](#arguments) with accompanying options, while workflow configuration inputs are listed here.
@@ -280,33 +178,10 @@ All supported CLI argument inputs are [listed below](#arguments) with accompanyi
 | UI       | `tag-actor`         | Tag the workflow triggering actor: `always`, `on-change`, or `never`.<sup>4</sup></br>Default: `always`                                   |
 | UI       | `hide-args`         | Hide comma-separated list of CLI arguments from the command input.<sup>6</sup></br>Default: `detailed-exitcode,parallelism,lock,out,var=` |
 | UI       | `show-args`         | Show comma-separated list of CLI arguments in the command input.<sup>6</sup></br>Default: `workspace`                                     |
->>>>>>> upstream/main
 
 </br>
 
 1. Both `command: plan` and `command: apply` include: `init`, `fmt` (with `format: true`), `validate` (with `validate: true`), and `workspace` (with `arg-workspace`) commands rolled into it automatically.</br>
-<<<<<<< HEAD
-  To separately run checks and/or generate outputs only, `command: init` can be used.</br></br>
-1. For `merge_group` event trigger, `plan-parity: true` inputs helps to prevent stale apply within the merge queue of workflow runs.</br></br>
-1. The secret string input for `plan-encrypt` can be of any length, as long as it's consistent between encryption (plan) and decryption (apply).</br></br>
-1. The `on-change` option is true when the exit code of the last TF command is non-zero.</br></br>
-1. The default behavior of `comment-method` is to update the existing PR comment with the latest plan/apply output, making it easy to track changes over time through the comment's revision history.</br></br>
-  [![PR comment revision history comparing plan and apply outputs.](/.github/assets/revisions.png)](https://raw.githubusercontent.com/op5dev/tf-via-pr/refs/heads/main/.github/assets/revisions.png "View full-size image.")
-
-</br>
-
-### Inputs - Arguments
-
-> [!NOTE]
->
-> - Arguments are passed to the appropriate TF command(s) automatically, whether that's `init`, `workspace`, `validate`, `plan`, or `apply`.</br>
-> - For repeated arguments like `arg-var`, `arg-backend-config`, `arg-replace` and `arg-target`, use commas to separate multiple values (e.g., `arg-var: key1=value1,key2=value2`).
-
-<details><summary>Toggle view of all available CLI arguments.</summary>
-
-</br>
-
-=======
     To separately run checks and/or generate outputs only, `command: init` can be used.</br></br>
 1. Originally intended for `merge_group` event trigger, `plan-parity: true` input helps to prevent stale apply within a series of workflow runs when merging multiple PRs.</br></br>
 1. The secret string input for `plan-encrypt` can be of any length, as long as it's consistent between encryption (plan) and decryption (apply).</br></br>
@@ -328,85 +203,35 @@ All supported CLI argument inputs are [listed below](#arguments) with accompanyi
 
 Applicable to respective "plan" and "apply" `command` inputs ("init" included).
 
->>>>>>> upstream/main
 | Name                      | CLI Argument                             |
 | ------------------------- | ---------------------------------------- |
 | `arg-auto-approve`        | `-auto-approve`                          |
 | `arg-backend-config`      | `-backend-config`                        |
 | `arg-backend`             | `-backend`                               |
 | `arg-backup`              | `-backup`                                |
-<<<<<<< HEAD
-| `arg-chdir`               | `-chdir`                                 |
-| `arg-check`               | `-check`</br>Default: `true`             |
-=======
 | `arg-chdir`               | `-chdir`</br>Alias: `working-directory`  |
->>>>>>> upstream/main
 | `arg-compact-warnings`    | `-compact-warnings`                      |
 | `arg-concise`             | `-concise`                               |
 | `arg-destroy`             | `-destroy`                               |
 | `arg-detailed-exitcode`   | `-detailed-exitcode`</br>Default: `true` |
-<<<<<<< HEAD
-| `arg-diff`                | `-diff`</br>Default: `true`              |
-=======
->>>>>>> upstream/main
+| `arg-exclude` (OpenTofu)  | `-exclude`                            |
 | `arg-force-copy`          | `-force-copy`                            |
 | `arg-from-module`         | `-from-module`                           |
 | `arg-generate-config-out` | `-generate-config-out`                   |
 | `arg-get`                 | `-get`                                   |
-<<<<<<< HEAD
-| `arg-list`                | `-list`                                  |
-=======
->>>>>>> upstream/main
 | `arg-lock-timeout`        | `-lock-timeout`                          |
 | `arg-lock`                | `-lock`                                  |
 | `arg-lockfile`            | `-lockfile`                              |
 | `arg-migrate-state`       | `-migrate-state`                         |
-<<<<<<< HEAD
-| `arg-no-tests`            | `-no-tests`                              |
-| `arg-or-create`           | `-or-create`</br>Default: `true`         |
 | `arg-parallelism`         | `-parallelism`                           |
 | `arg-plugin-dir`          | `-plugin-dir`                            |
 | `arg-reconfigure`         | `-reconfigure`                           |
-| `arg-recursive`           | `-recursive`</br>Default: `true`         |
-=======
-| `arg-parallelism`         | `-parallelism`                           |
-| `arg-plugin-dir`          | `-plugin-dir`                            |
-| `arg-reconfigure`         | `-reconfigure`                           |
->>>>>>> upstream/main
 | `arg-refresh-only`        | `-refresh-only`                          |
 | `arg-refresh`             | `-refresh`                               |
 | `arg-replace`             | `-replace`                               |
 | `arg-state-out`           | `-state-out`                             |
 | `arg-state`               | `-state`                                 |
 | `arg-target`              | `-target`                                |
-<<<<<<< HEAD
-| `arg-test-directory`      | `-test-directory`                        |
-| `arg-upgrade`             | `-upgrade`                               |
-| `arg-var-file`            | `-var-file`                              |
-| `arg-var`                 | `-var`                                   |
-| `arg-workspace`           | `-workspace`                             |
-| `arg-write`               | `-write`                                 |
-</details>
-
-</br>
-
-### Outputs
-
-| Type     | Name         | Description                                   |
-| -------- | ------------ | --------------------------------------------- |
-| Artifact | `plan-id`    | ID of the plan file artifact.                 |
-| Artifact | `plan-url`   | URL of the plan file artifact.                |
-| CLI      | `command`    | Input of the last TF command.                 |
-| CLI      | `diff`       | Diff of changes, if present (truncated).      |
-| CLI      | `exitcode`   | Exit code of the last TF command.             |
-| CLI      | `result`     | Result of the last TF command (truncated).    |
-| CLI      | `summary`    | Summary of the last TF command.               |
-| Workflow | `check-id`   | ID of the check run.                          |
-| Workflow | `comment-id` | ID of the PR comment.                         |
-| Workflow | `job-id`     | ID of the workflow job.                       |
-| Workflow | `run-url`    | URL of the workflow run.                      |
-| Workflow | `identifier` | Unique name of the workflow run and artifact. |
-=======
 | `arg-upgrade`             | `-upgrade`                               |
 | `arg-var-file`            | `-var-file`                              |
 | `arg-var`                 | `-var`                                   |
@@ -452,7 +277,6 @@ Applicable only when `validate: true`.
 | Workflow | `job-id`       | ID of the workflow job.                       |
 | Workflow | `run-url`      | URL of the workflow run.                      |
 | Workflow | `identifier`   | Unique name of the workflow run and artifact. |
->>>>>>> upstream/main
 
 </br>
 
@@ -492,16 +316,4 @@ View [all notable changes](https://github.com/op5dev/tf-via-pr/releases "Release
 
 - This project is licensed under the permissive [Apache License 2.0](LICENSE "Apache License 2.0.").
 - All works herein are my own, shared of my own volition, and [contributors](https://github.com/op5dev/tf-via-pr/graphs/contributors "Contributors.").
-<<<<<<< HEAD
-- Copyright 2016-2025 [Rishav Dhar](https://github.com/rdhar "Rishav Dhar's GitHub profile.") — All wrongs reserved.
-
-</br>
-
-### Sponsors
-
-- [@3ware](https://github.com/3ware)
-- [@ego93](https://github.com/ego93)
-- [@StoatLabs](https://github.com/StoatLabs)
-=======
 - Copyright 2016-present [Rishav Dhar](https://github.com/rdhar "Rishav Dhar's GitHub profile.") — All wrongs reserved.
->>>>>>> upstream/main
