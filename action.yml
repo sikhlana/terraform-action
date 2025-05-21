@@ -149,6 +149,12 @@ runs:
         echo "${{ inputs.tool }} init${{ steps.arg.outputs.arg-chdir }}${args}" | sed 's/ -/\n -/g' > tf.command.txt
         ${{ inputs.tool }}${{ steps.arg.outputs.arg-chdir }} init${args} 2> >(tee tf.console.txt) > >(tee tf.console.txt)
 
+        if [[ -n "$TF_WORKSPACE" ]]
+          then
+            # Create workspace if it doesn't exist.
+            ${{ inputs.tool }}${{ steps.arg.outputs.arg-chdir }} workspace new $TF_WORKSPACE || true
+        fi
+
     - if: ${{ inputs.validate == 'true' && contains(fromJSON('["plan", "apply", "init"]'), inputs.command) }}
       id: validate
       shell: bash
