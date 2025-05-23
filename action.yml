@@ -155,6 +155,8 @@ runs:
             ${{ inputs.tool }}${{ steps.arg.outputs.arg-chdir }} workspace new $TF_WORKSPACE || true
         fi
 
+        ${{ inputs.tool }}${{ steps.arg.outputs.arg-chdir }} init${args} 2> >(tee tf.console.txt) > >(tee tf.console.txt)
+
     - if: ${{ inputs.validate == 'true' && contains(fromJSON('["plan", "apply", "init"]'), inputs.command) }}
       id: validate
       shell: bash
